@@ -1052,5 +1052,9 @@ List<Map<String, dynamic>> allRecipies = [
     "mealType": ["Beverage"]
   }
 ];
-List<Map<String, dynamic>> Diet_list = [];
+List<String> meal =
+    allRecipies.map((e) => e['mealType'].toString()).toSet().toList();
+List<String> difficulty =
+    allRecipies.map((e) => e['difficulty'].toString()).toSet().toList();
 
+List<Map<String, dynamic>> Diet_list = [];

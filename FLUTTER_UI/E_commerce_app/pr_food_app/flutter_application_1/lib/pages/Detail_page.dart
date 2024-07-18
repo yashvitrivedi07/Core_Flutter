@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter_application_1/utils/pro_list.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 
 class DetailPage extends StatefulWidget {
-  final Map<String, dynamic> recipe;
-  const DetailPage({super.key, required this.recipe});
+  const DetailPage({super.key});
 
   @override
   State<DetailPage> createState() => _DetailPageState();
@@ -14,8 +14,9 @@ class _DetailPageState extends State<DetailPage> {
   @override
   Widget build(BuildContext context) {
     Size size = MediaQuery.sizeOf(context);
-    String ingredients =
-        (widget.recipe['ingredients'] as List<dynamic>).join('\n');
+         Map<String, dynamic> recipe = ModalRoute.of(context)!.settings.arguments as Map<String, dynamic>;
+
+  
 
     return Scaffold(
       appBar: AppBar(
@@ -49,7 +50,7 @@ class _DetailPageState extends State<DetailPage> {
                             child: ClipRRect(
                                 borderRadius: BorderRadius.circular(15),
                                 child: Image.network(
-                                  widget.recipe['image'],
+                                  recipe['image'],
                                 ))),
                       ),
                     ),
@@ -75,7 +76,7 @@ class _DetailPageState extends State<DetailPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 20, top: 10),
                                 child: Text(
-                                  widget.recipe['name'],
+                                  recipe['name'],
                                   style: TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.w700),
@@ -84,7 +85,7 @@ class _DetailPageState extends State<DetailPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 20, top: 10),
                                 child: Text(
-                                  "Difficulty  : ${widget.recipe['difficulty']}",
+                                  "Difficulty  : ${recipe['difficulty']}",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
@@ -93,7 +94,7 @@ class _DetailPageState extends State<DetailPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 20, top: 10),
                                 child: Text(
-                                  "Cuisine  : ${widget.recipe['cuisine']}",
+                                  "Cuisine  : ${recipe['cuisine']}",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
@@ -102,7 +103,7 @@ class _DetailPageState extends State<DetailPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 20, top: 10),
                                 child: Text(
-                                  "Prepare Time  : ${widget.recipe['prepTimeMinutes']}",
+                                  "Prepare Time  : ${recipe['prepTimeMinutes']}",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
@@ -111,7 +112,7 @@ class _DetailPageState extends State<DetailPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 20, top: 10),
                                 child: Text(
-                                  "Cook Time  : ${widget.recipe['cookTimeMinutes']}",
+                                  "Cook Time  : ${recipe['cookTimeMinutes']}",
                                   style: TextStyle(
                                       fontSize: 18,
                                       fontWeight: FontWeight.w300),
@@ -120,7 +121,7 @@ class _DetailPageState extends State<DetailPage> {
                               Padding(
                                 padding: EdgeInsets.only(left: 20, top: 10),
                                 child: RatingBarIndicator(
-                                  rating: widget.recipe['rating'],
+                                  rating: recipe['rating'],
                                   itemBuilder: (context, index) => Icon(
                                     Icons.star,
                                     color: Colors.amber,
@@ -149,7 +150,20 @@ class _DetailPageState extends State<DetailPage> {
                                         )
                                       ],
                                       borderRadius: BorderRadius.circular(10)),
-                                  child: Align(alignment: Alignment.center,child: Text("Add to Diet")),
+                                  child: InkWell(
+                                    onTap: () {
+                                      
+                                    if(!Diet_list.contains(recipe))
+                                    {
+                                      setState(() {
+                                       Diet_list.add(recipe);
+                                      });
+                                      
+                                    }
+                                  },
+                                      child: Align(
+                                          alignment: Alignment.center,
+                                          child: Text("Add to Diet"))),
                                 ),
                               ),
                             ),

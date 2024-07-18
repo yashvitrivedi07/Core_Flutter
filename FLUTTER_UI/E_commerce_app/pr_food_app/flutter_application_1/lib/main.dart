@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/pages/Detail_page.dart';
+import 'package:flutter_application_1/pages/Diet_page.dart';
 import 'package:flutter_application_1/pages/Home_page.dart';
 
 void main() => runApp(App());
@@ -14,6 +15,8 @@ class App extends StatelessWidget {
       
       routes: {
         '/': (context) => HomePage(),
+        'detail_page': (context) => DetailPage(),
+        'diet_page': (context) => DietPage()
       },
     );
   }
