@@ -1,20 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_application_1/pages/Detail_page.dart';
 import 'package:flutter_application_1/tile/category_Tile.dart';
 import 'package:flutter_application_1/utils/pro_list.dart';
-import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:flutter_application_1/extension/size.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+  const HomePage({Key? key}) : super(key: key);
 
   @override
   State<HomePage> createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  String selected = "Difficulty";
-  RangeValues sliderValue = RangeValues(0, 50000);
+  String selected = "All";
+  RangeValues sliderValue = const RangeValues(0, 3000); // Initialize with const for safety
 
   @override
   Widget build(BuildContext context) {
@@ -22,149 +19,123 @@ class _HomePageState extends State<HomePage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Home Page"),
+        title: const Text("Home Page"), // Use const for static widgets
         actions: [
           IconButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed('diet_page');
-              },
-              icon: Icon(Icons.food_bank))
+            onPressed: () {
+              Navigator.of(context).pushNamed('diet_page');
+            },
+            icon: const Icon(Icons.food_bank),
+          ),
         ],
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          scrollDirection: Axis.vertical,
-          child: Column(
-            children: [
-              SizedBox(
-                height: size.height * .4,
-                width: size.width * .80,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.orange,
-                    borderRadius: BorderRadius.circular(15),
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            SizedBox(
+              height: size.height * 0.4,
+              width: size.width * 0.80,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.orange,
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                child: Center(
+                  child: const Text(
+                    'Welcome to the Recipe App!',
+                    style: TextStyle(fontSize: 24, color: Colors.white),
                   ),
                 ),
               ),
-              SizedBox(
-                height: size.height * 0.08,
-              ),
-              Row(
+            ),
+            SizedBox(height: size.height * 0.08),
+            Padding(
+              padding: const EdgeInsets.all(20),
+              child: Row(
                 children: [
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(blurRadius: 5, color: Colors.orange)
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        SingleChildScrollView(
-                          scrollDirection: Axis.vertical,
-                          child: Column(
-                            children: [
-                              // Add content here
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  )
-                ],
-              ),
-              SizedBox(
-                height: size.height * 0.08,
-              ),
-              Padding(
-                padding: EdgeInsets.all(20),
-                child: Row(
-                  children: [
-                    DropdownButton<String>(
-                      value: selected,
-                      hint: Text("Selected"),
-                      onChanged: (String? value) {
+                  DropdownButton<String>(
+                    value: selected,
+                    hint: const Text("Select Difficulty"),
+                    onChanged: (String? value) {
+                      setState(() {
+                        selected = value ?? "All";
+                      });
+                    },
+                    items: [
+                      DropdownMenuItem(
+                        value: "All",
+                        child: const Text("All"),
+                      ),
+                      ...difficulty.map((e) => DropdownMenuItem(
+                            value: e,
+                            child: Text(e),
+                          )),
+                    ],
+                  ),
+                  const SizedBox(width: 20),
+                  Visibility(
+                    visible: selected != "All",
+                    child: ActionChip(
+                      label: const Text("Clear"),
+                      avatar: const Icon(Icons.close_fullscreen_sharp),
+                      onPressed: () {
                         setState(() {
-                          selected = value ?? "Difficulty";
+                          selected = "All";
+                          sliderValue = const RangeValues(0, 3000); // Reset slider values
                         });
                       },
-                      items: [
-                        DropdownMenuItem(
-                          value: "Difficulty",
-                          child: Text("Difficulty"),
-                        ),
-                        ...difficulty.map((e) => DropdownMenuItem(
-                          value: e,
-                          child: Text(e),
-                        )).toList(),
-                      ],
                     ),
-                    SizedBox(width: 20),
-                    Visibility(
-                      visible: selected != "Difficulty",
-                      child: ActionChip(
-                        label: Text("Clear"),
-                        avatar: Icon(Icons.close),
-                        onPressed: () {
-                          setState(() {
-                            selected = "Difficulty";
-                            sliderValue = RangeValues(0, 50000);
-                          });
-                        },
-                      ),
-                    ),
-                    SizedBox(width: 20),
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Text(
-                            "From\n${sliderValue.start.toInt()}",
-                            textAlign: TextAlign.center,
-                          ),
-                          Expanded(
-                            child: RangeSlider(
-                              values: sliderValue,
-                              onChanged: (RangeValues value) {
-                                setState(() {
-                                  sliderValue = value;
-                                });
-                              },
-                              max: 50000,
-                              min: 0,
-                              divisions: 50000,
-                            ),
-                          ),
-                          Text(
-                            "End\n${sliderValue.end.toInt()}",
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              selected == "Difficulty"
-                  ? Column(
+                  ),
+                  const SizedBox(width: 20),
+                  Expanded(
+                    child: Row(
                       children: [
-                        category_Tile(size: size, context: context),
-                        ...difficulty.map((e) => category_Tile(
-                          size: size,
-                          context: context,
-                          Difficulty: e,
-                        )).toList(),
+                        Text(
+                          "From\n${sliderValue.start.toInt()}",
+                          textAlign: TextAlign.center,
+                        ),
+                        Expanded(
+                          child: RangeSlider(
+                            values: sliderValue,
+                            onChanged: (RangeValues value) {
+                              setState(() {
+                                sliderValue = value; // Update slider value
+                              });
+                            },
+                            max: 3000,
+                            min: 0,
+                            divisions: 3000,
+                          ),
+                        ),
+                        Text(
+                          "To\n${sliderValue.end.toInt()}",
+                          textAlign: TextAlign.center,
+                        ),
                       ],
-                    )
-                  : category_Tile(
-                      size: size,
-                      context: context,
-                      Difficulty: selected,
-                      start: sliderValue.start,
-                      end: sliderValue.end,
                     ),
-            ],
-          ),
+                  ),
+                ],
+              ),
+            ),
+            selected == "All"
+                ? Column(
+                    children: [
+                      category_Tile(size: size, context: context),
+                      ...difficulty.map((e) => category_Tile(
+                            size: size,
+                            context: context,
+                            Difficulty: e,
+                          )),
+                    ],
+                  )
+                : category_Tile(
+                    size: size,
+                    context: context,
+                    Difficulty: selected,
+                    start: sliderValue.start,
+                    end: sliderValue.end,
+                  ),
+          ],
         ),
       ),
     );
